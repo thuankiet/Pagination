@@ -1,0 +1,56 @@
+extends ../layout/common
+
+block content
+  .container
+    if error
+      each err in error
+        .alert.alert-warning.alert-dismissible.fade.show(role='alert')= err
+    
+    h1 User List
+    
+    table.table
+      tr
+        th User Name   
+        th Info
+        th Delete User
+      each user in users
+        tr
+          td= user.userName
+          td
+            a.pl-2.pr-2.text-white.rounded(href="/transactions/info/"+user.id, style="background-color:dodgerblue; text-decoration:none") Show Info
+          td
+            if user.isAdmin === false
+              a.pl-2.pr-2.text-white.rounded(href="/transactions/delete/"+user.id, style="background-color:red; text-decoration:none") Delete
+            else
+              p Admin
+    
+    if(pages > 0)
+      ul.pagination
+        if(current == 1)
+          li.page-item.disabled
+            a.page-link.shadow-none First
+        else
+          li.page-item
+            a.page-link.shadow-none(href='/transactions?page=1') First
+            
+        - var n = (current > 3 ? current - 2 : 1);
+        if(n !== 1)
+          li.page-item.disabled
+            a.page-link.shadow-none ...
+            
+        - for(; n <= (current + 2) && n <= pages; n++)
+          if(current == n)
+            li.page-item.active
+              a.page-link.shadow-none= n
+          else
+            li.page-item
+              a.page-link.shadow-none(href="/transactions?page="+n)= n
+          if(n == current + 2 && n < pages)
+            li.page-item.disabled
+              a.page-link.shadow-none ...
+        if (current == pages)
+          li.page-item.disabled
+            a.page-link.shadow-none Last
+        else
+          li.page-item
+            a.page-link.shadow-none(href='/transactions?page='+pages) Last
